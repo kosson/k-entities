@@ -1,21 +1,25 @@
-import {app} from './app.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import {build} from './app.js';
+const server = await build();
+
+const port = process.env.PORT || 3300;
+const host = process.env.HOST || '127.0.0.1';
 
 async function runServer () {
     try {
-        await app.listen({ 
-            port: 3300,
-            host: "0.0.0.0"
-        });
+        await server.listen({port, host});
         // console.log(`server listening on ${app.server.address().port}`);
     } catch (err) {
-        app.log.error(err);
+        server.log.error(err);
         process.exit(1);
     }
 };
 
 ["SIGINT", "SIGTERM"].forEach((signal) => {
     process.on(signal, async () => {
-        await app.close();
+        await server.close();
         process.exit(0);
     });
 });
