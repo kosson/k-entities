@@ -43,21 +43,41 @@ export const app = Fastify({
   logger: envToLogger ?? true // defaults to true if no entry matches in the map
 });
 
+function handleConn (error, conn /* SocketStream */, req /* FastifyRequest */, reply /* FastifyReply */) {
+  if (error) {
+    conn.destroy(error);
+  }
+  conn.pipe(conn) // creează un mecanism de ecou pentru testarea websocketului
+}
+
 // Registering Fastify ecosystem parts
 app.register(multipart); // înrolează modulul `multipart`
-// app.register(websocket); // înrolează modulul `websockets`
+app.register(websocket, {
+  handleConn,
+  options: { maxPayload: 1048576 } // setăm numărul maxim de mesaje permise la 1 MiB (1024 bytes * 1024 bytes)
+}); // înrolează modulul `websockets`
 
+app.register(async function router4socks () {
+  app.route({
+    method: 'GET',
+    url: '/sock',
+    handler: (req, reply) => {
+      // metoda va gestiona cererile http
+      reply.send({salut: 'Ce faci?'});
+    },
+    wsHandler: (conn, req) => {
+      conn.setEncoding('utf8');
+      conn.write('Bine ai venit, prietene!');
+      conn.socket.on('message', (message) => {
+        conn.socket.send('Mesaj de la Fastify WebSockets');
+      });
+    }
+  });
+})
 
 app.get('/', async function clbkR (request, response) {
   return reply.code(200).send('Funcționează!');
 })
-
-app.get('/sock', { websocket: true }, async function clbkRoot (connection, req) {
-  connection.socket.on('message', (message) => {
-    connection.socket.send('Mesaj de la Fastify WebSockets');
-  });
-  done();
-});
 
 // Creează prima rută de test
 app.get('/test', {
