@@ -20,32 +20,6 @@ import { pipeline } from 'stream';
 const pump = util.promisify(pipeline);
 import PDFParser from "pdf2json";
 
-// Obiectul pentru configurarea logging-ului
-const envToLogger = {
-  development: {
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        translateTime: 'HH:MM:ss Z',
-        ignore: 'pid,hostname',
-      }
-    }
-  },
-  production: true,
-  test: false,
-}
-
-if (process.stdout.isTTY) {
-  envToLogger.development.transport = {target: 'pino-pretty'};
-}
-
-// obiectul opțiunilor de configurare a aplicației
-const opts = {
-  logger: envToLogger ?? true // defaults to true if no entry matches in the map
-}
-// instanțiază frameworkul Fastify
-// export const app = Fastify(opts);
-
 // cu autoload se încarcă automat toate pluginurile și toate rutele
 export async function build (opts) {
   const app = Fastify(opts);
@@ -67,6 +41,17 @@ export async function build (opts) {
 
   app.register(autoload, {
     dir: join(import.meta.url, 'routes')
+  });
+
+  app.setErrorHandler(async (err, request, reply) => {
+    if (err.validation) {
+      reply.code(403);
+      return err.message;
+    }
+    request.log.error({err});
+    reply.code(err.statusCode || 500);
+    
+    return "A apărut o eroare în prelucrarea cererii tale";
   });
 
   return app;

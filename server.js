@@ -1,8 +1,30 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import closeWithGrace from 'close-with-grace';
 import {build} from './app.js';
-const server = await build();
+
+// Obiectul pentru configurarea logging-ului
+const envToLogger = {
+  development: {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'HH:MM:ss Z',
+        ignore: 'pid,hostname',
+      }
+    }
+  },
+  production: false,
+  test: false,
+}
+
+// obiectul opțiunilor de configurare a aplicației
+const opts = {
+  logger: envToLogger ?? true // defaults to true if no entry matches in the map
+}
+
+const server = await build(opts);
 
 const port = process.env.PORT || 3300;
 const host = process.env.HOST || '127.0.0.1';
@@ -17,11 +39,19 @@ async function runServer () {
     }
 };
 
-["SIGINT", "SIGTERM"].forEach((signal) => {
-    process.on(signal, async () => {
-        await server.close();
-        process.exit(0);
-    });
+// ["SIGINT", "SIGTERM"].forEach((signal) => {
+//     process.on(signal, async () => {
+//         await server.close();
+//         process.exit(0);
+//     });
+// });
+
+closeWithGrace(async ({err}) => {
+  if (err) {
+      server.log.error({err}, 'Serverul a fost oprit datorită unei erori');
+  }
+  server.log.info('Închid serverul așa cum trebuie');
+  await server.close();
 });
 
 await runServer();
