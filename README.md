@@ -1,6 +1,6 @@
 # k-entities
 
-Aplicația are în țintă realizarea unui API cu ajutorul căruia să poți descompune orice resursă de informare, a cărui părți să le încarci într-un nod IPFS.
+Aplicația are în țintă realizarea unui API cu ajutorul căruia să poți descompune orice resursă de informare, a cărei părți să le încarci într-un nod IPFS.
 
 Construcția se face pe Fastify din motive legate de viteză și oportunități de modularizare.
 
@@ -18,3 +18,8 @@ După ce pornești serverul, consultă: http://127.0.0.1:3300/documentation/stat
 ## Resurse pentru dezvoltare
 
 [Building a modular monolith with Fastify - Matteo Collina, Node Congress 2023](https://www.youtube.com/watch?v=e1jkA-ee_aY)
+
+## Roadmap
+
+[] enpoint de prelucrare pdf-uri pentru extragerea textului, tokenizare și lexemizare.
+[] inetrfață pentru endoint-ul de prelucrare pdf
