@@ -12,8 +12,10 @@ import { dirname, filename, join } from 'desm';
 import validator from 'validator';
 
 // Node specific
-import * as fs from 'node:fs'
+import * as fs from 'node:fs';
 import util from 'util';
+import test from 'node:test';
+import assert from 'node:assert';
 import { pipeline } from 'stream';
 const pump = util.promisify(pipeline);
 import PDFParser from "pdf2json";
@@ -57,6 +59,7 @@ export async function build (opts) {
     }
   });
 
+  // rutele beneficază de acceași aplicație
   app.register(autoload, {
     dir: join(import.meta.url, 'plugins'),
     encapsulate: false
