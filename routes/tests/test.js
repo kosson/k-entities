@@ -7,7 +7,7 @@ const nixfs = unixfs(knode);        // creează un sistem de fișiere suport pen
 const encoder = new TextEncoder();  // folosește TextEncoder pentru a transforma string-urile în Uint8Arrays
 const decoder = new TextDecoder();  // this decoder will turn Uint8Arrays into strings
 
-export default async function (app, opts) {
+export default async function hndlTest (app, opts) {
   // Creează prima rută de test
   app.get('/test', {
     handler: async function handlerRoot (request, reply) {

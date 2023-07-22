@@ -8,7 +8,7 @@ import util from 'util';
 import { pipeline } from 'stream';
 const pump = util.promisify(pipeline);
 
-export default async function (app, opts) {
+export default async function hndlUpload (app, opts) {
   // Registering Fastify ecosystem parts
   app.register(multipart); // înrolează modulul `multipart`
   // Ruta de upload și prelucrare

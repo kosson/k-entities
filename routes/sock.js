@@ -10,7 +10,7 @@ function handleConn (error, conn /* SocketStream */, req /* FastifyRequest */, r
   conn.pipe(conn) // creează un mecanism de ecou pentru testarea websocketului
 }
 
-export default async function (app, opts) {
+export default async function hndlsockets (app, opts) {
   app.register(websocket, {
     handleConn,
     options: { maxPayload: 1048576 } // setăm numărul maxim de mesaje permise la 1 MiB (1024 bytes * 1024 bytes)

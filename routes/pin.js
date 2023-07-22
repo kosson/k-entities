@@ -14,8 +14,7 @@ import { create, globSource, urlSource } from 'kubo-rpc-client';
 // connect to the default API address http://localhost:5001
 const kuboClient = await create();
 
-
-export default async function (app, opts) {
+export default async function hndlPin (app, opts) {
   app.post('/pin', async function pinClbk (request, reply) {
     try {
       // const parts = request.parts(); // pentru a prelucra și restul datelor din câmpuri, nu numai fișierele

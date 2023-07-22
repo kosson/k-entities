@@ -24,6 +24,7 @@ import PDFParser from "pdf2json";
 export async function build (opts) {
   const app = Fastify(opts);
 
+  // generarea automată a documentației API-ului (OpenAPI)
   app.register(swagger);
   app.register(swaggerUI, {
     theme: {
@@ -43,6 +44,7 @@ export async function build (opts) {
     dir: join(import.meta.url, 'routes')
   });
 
+  // managerul de erori
   app.setErrorHandler(async (err, request, reply) => {
     if (err.validation) {
       reply.code(403);
